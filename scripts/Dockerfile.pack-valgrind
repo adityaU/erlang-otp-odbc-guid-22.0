@@ -1,0 +1,24 @@
+ARG BASE_IMAGE
+FROM $BASE_IMAGE
+
+USER root
+
+RUN apt-get install --fix-missing -y valgrind bc
+
+USER otptest
+
+ENV CONFIG_FLAGS="--without-dialyzer --without-wx --without-debugger --without-observer --without-et --without-megaco --without-diameter --without-edoc --without-erl_docgen --without-appmon --without-asn1 --without-jinterface --without-reltool --without-gs --without-ic --without-mnesia --without-orber --without-pman --without-ssl --without-toolbar --without-tv --without-odbc --without-cosTransactions --without-cosEvent --without-cosTime --without-cosNotification --without-cosProperty --without-cosFileTransfer --without-cosEventDomain --without-webtool --without-ssh --without-typer --without-percept --without-eldap --disable-hipe"
+
+ENV VALGRIND_LOG_XML=yes
+ENV VALGRIND_MISC_FLAGS="--child-silent-after-fork=yes --show-possibly-lost=no"
+ENV TS_EXTRA_PLATFORM_LABEL="Valgrind"
+ENV TS_RUN_VALGRIND=yes
+ENV VALGRIND_LOG_DIR=/daily_build/valgrind_logs
+
+RUN mkdir $VALGRIND_LOG_DIR
+
+ENV ERL_ZFLAGS="+Meamin -smp"
+
+ENV PATH=$PATH:/daily_build/otp_src/bin
+
+ENV ERL="cerl -valgrind"
